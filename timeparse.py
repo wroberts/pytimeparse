@@ -3,6 +3,7 @@
 #  implementation
 # ------------------------------------------------------------
 
+from collections import defaultdict
 import re
 
 YEARS = r'(?P<years>\d+)\s*(?:ys?|yrs?.?|years?)'
