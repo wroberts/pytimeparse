@@ -6,9 +6,9 @@
 from collections import defaultdict
 import re
 
-YEARS = r'(?P<years>\d+)\s*(?:ys?|yrs?.?|years?)'
+#YEARS = r'(?P<years>\d+)\s*(?:ys?|yrs?.?|years?)'
 
-MONTHS = r'(?P<months>\d+)\s*(?:mos?.?|mths?.?|months?)'
+#MONTHS = r'(?P<months>\d+)\s*(?:mos?.?|mths?.?|months?)'
 
 DAYS = r'(?P<days>\d+)\s*(?:d|dys?|days?)'
 
@@ -25,9 +25,10 @@ OPTSEP = lambda x: '(?:{x}\s*(?:{SEPARATORS}\s*)?)?'.format(x=x, SEPARATORS=SEPA
 
 #TIME = r'(?:{HOURS}\s*(?:{SEPARATORS}\s*)?)?(?:{MINS}\s*(?:{SEPARATORS}\s*)?\s*)?(?:{SECS})?'.format(HOURS=HOURS, SEPARATORS=SEPARATORS, MINS=MINS, SECS=SECS)
 
-TIME = '{YEARS}\s*{MONTHS}\s*{DAYS}\s*{HOURS}\s*{MINS}\s*{SECS}'.format(
-    YEARS=OPTSEP(YEARS),
-    MONTHS=OPTSEP(MONTHS),
+#TIME = '{YEARS}\s*{MONTHS}\s*{DAYS}\s*{HOURS}\s*{MINS}\s*{SECS}'.format(
+TIME = '{DAYS}\s*{HOURS}\s*{MINS}\s*{SECS}'.format(
+    #YEARS=OPTSEP(YEARS),
+    #MONTHS=OPTSEP(MONTHS),
     DAYS=OPTSEP(DAYS),
     HOURS=OPTSEP(HOURS),
     MINS=OPTSEP(MINS),

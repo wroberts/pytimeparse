@@ -33,13 +33,13 @@
 5.6 wk
 5.6 week
 5.6 weeks
-3.1 months
-12.24 year
-12.24 years
-12.24 yr
-12.24 y
-12 years, 3 months, 2 days, 5 hours, 34 minutes, 56 seconds
-12 years, 3 months, 2 days,  4:13:02
+#3.1 months
+#12.24 year
+#12.24 years
+#12.24 yr
+#12.24 y
+#12 years, 3 months, 2 days, 5 hours, 34 minutes, 56 seconds
+#12 years, 3 months, 2 days,  4:13:02
 
 # http://stackoverflow.com/questions/538666/python-format-timedelta-to-string
 # standard format using
