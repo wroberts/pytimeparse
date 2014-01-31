@@ -40,3 +40,15 @@ class TestRegexes(unittest.TestCase):
             self.assertGreater(
                 set(re.match(TIME + r'\s*$', '16h32m64s  ').groupdict().iteritems()),
                 set([('hours', '16'), ('secs', '64'), ('mins', '32')]))
+
+    def test_timeparse_simple(self):
+        self.assertEqual(timeparse('32 min'),
+                         1920)
+        self.assertEqual(timeparse('1 min'),
+                         60)
+        self.assertEqual(timeparse('1 hours'),
+                         3600)
+        self.assertEqual(timeparse('1 day'),
+                         86400)
+        self.assertEqual(timeparse('1 sec'),
+                         1)

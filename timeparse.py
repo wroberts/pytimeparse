@@ -42,4 +42,26 @@ def t(x, y):
         print re.match(x, y).groupdict()
 #RE =
 
+MULTIPLIERS = dict([
+    #('years', 60 * 60 * 24 * 365),
+    #('months', 60 * 60 * 24 * 30),
+    ('days', 60 * 60 * 24),
+    ('hours', 60 * 60),
+    ('mins', 60),
+    ('secs', 1)
+    ])
 
+def timeparse(sval):
+    match = re.match(TIME + r'\s*$', sval)
+    if match:
+        fields = defaultdict(
+            int,
+            ((k, int(v, 10))
+             for (k, v) in match.groupdict().iteritems()
+             if v is not None))
+        return sum([MULTIPLIERS[k] * v for (k, v) in fields.iteritems()])
+        #return fields
+        #fields = defaultdict(int).update(
+        #    dict((k, int(v, 10))
+        #         for (k, v) in match.groupdict()))
+        #return fields
