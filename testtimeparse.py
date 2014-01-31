@@ -37,6 +37,6 @@ class TestRegexes(unittest.TestCase):
                          {'hours': '32'})
 
     def test_time(self):
-            self.assertEqual(
-                re.match(TIME + r'\s*$', '16h32m64s  ').groupdict(),
-                {'hours': '16', 'secs': '64', 'mins': '32'})
+            self.assertGreater(
+                set(re.match(TIME + r'\s*$', '16h32m64s  ').groupdict().iteritems()),
+                set([('hours', '16'), ('secs', '64'), ('mins', '32')]))
