@@ -44,31 +44,3 @@
 # http://stackoverflow.com/questions/538666/python-format-timedelta-to-string
 # standard format using
 # str(datetime.timedelta(hours=10.56))
-
-
-
-def interpret_time_since ( s ):
-    '''Attempts to parse a "time since", such as 5.6 wk.  If successful,
-    returns the time referred to.'''
-    m = re.match ( r'^([0-9.]+)\s*([a-z]*)$', s.strip().lower() )
-    if m is not None:
-        number, units = m.groups()
-        if not units:
-            units = ''
-        number, units = float(number), units.strip()
-        if units in [ 'm', 'min', 'mins', 'minute', 'minutes' ]:
-            return ( datetime.datetime.now() -
-                     datetime.timedelta ( minutes = number ) )
-        elif units in [ 'h', 'hr', 'hrs', 'hour', 'hours' ]:
-            return ( datetime.datetime.now() -
-                     datetime.timedelta ( hours = number ) )
-        elif units in [ 'd', 'day', 'days' ]:
-            return ( datetime.datetime.now() -
-                     datetime.timedelta ( days = number ) )
-        elif units in [ 'w', 'week', 'weeks' ]:
-            return ( datetime.datetime.now() -
-                     datetime.timedelta ( weeks = number ) )
-        elif units in [ 'y', 'year', 'years' ]:
-            return ( datetime.datetime.now() -
-                     datetime.timedelta ( weeks = number * 52 ) )
-    assert False
