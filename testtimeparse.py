@@ -1,176 +1,237 @@
-from timeparse import *
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+'''
+testtimeparse.py
+(c) Will Roberts <wildwilhelm@gmail.com>  1 February, 2014
+
+Unit tests for the `timeparse` module.
+'''
+
 import doctest
+import re
+import timeparse
 import unittest
 
-class TestRegexes(unittest.TestCase):
+class TestTimeparse(unittest.TestCase):
+    '''
+    Unit tests for the `timeparse` module.
+    '''
 
     def setUp(self):
+        '''Setup function.'''
         pass
 
     def test_mins(self):
-        self.assertEqual(re.match(MINS, '32min').groupdict(),
+        '''Test parsing minutes.'''
+        self.assertEqual(re.match(timeparse.MINS, '32min').groupdict(),
                          {'mins': '32'})
-        self.assertEqual(re.match(MINS, '32mins').groupdict(),
+        self.assertEqual(re.match(timeparse.MINS, '32mins').groupdict(),
                          {'mins': '32'})
-        self.assertEqual(re.match(MINS, '32minute').groupdict(),
+        self.assertEqual(re.match(timeparse.MINS, '32minute').groupdict(),
                          {'mins': '32'})
-        self.assertEqual(re.match(MINS, '32minutes').groupdict(),
+        self.assertEqual(re.match(timeparse.MINS, '32minutes').groupdict(),
                          {'mins': '32'})
-        self.assertEqual(re.match(MINS, '32mins').groupdict(),
+        self.assertEqual(re.match(timeparse.MINS, '32mins').groupdict(),
                          {'mins': '32'})
-        self.assertEqual(re.match(MINS, '32min').groupdict(),
+        self.assertEqual(re.match(timeparse.MINS, '32min').groupdict(),
                          {'mins': '32'})
 
     def test_hrs(self):
-        self.assertEqual(re.match(HOURS, '32h').groupdict(),
+        '''Test parsing hours.'''
+        self.assertEqual(re.match(timeparse.HOURS, '32h').groupdict(),
                          {'hours': '32'})
-        self.assertEqual(re.match(HOURS, '32hr').groupdict(),
+        self.assertEqual(re.match(timeparse.HOURS, '32hr').groupdict(),
                          {'hours': '32'})
-        self.assertEqual(re.match(HOURS, '32hrs').groupdict(),
+        self.assertEqual(re.match(timeparse.HOURS, '32hrs').groupdict(),
                          {'hours': '32'})
-        self.assertEqual(re.match(HOURS, '32hour').groupdict(),
+        self.assertEqual(re.match(timeparse.HOURS, '32hour').groupdict(),
                          {'hours': '32'})
-        self.assertEqual(re.match(HOURS, '32hours').groupdict(),
+        self.assertEqual(re.match(timeparse.HOURS, '32hours').groupdict(),
                          {'hours': '32'})
-        self.assertEqual(re.match(HOURS, '32 hours').groupdict(),
+        self.assertEqual(re.match(timeparse.HOURS, '32 hours').groupdict(),
                          {'hours': '32'})
-        self.assertEqual(re.match(HOURS, '32 h').groupdict(),
+        self.assertEqual(re.match(timeparse.HOURS, '32 h').groupdict(),
                          {'hours': '32'})
 
     def test_time(self):
-            self.assertGreater(
-                set(re.match(TIMEFORMATS[0] + r'\s*$',
-                             '16h32m64s  ').groupdict().iteritems()),
-                set([('hours', '16'), ('mins', '32'), ('secs', '64')]))
+        '''Test parsing time expression.'''
+        self.assertGreater(
+            set(re.match(timeparse.TIMEFORMATS[0] + r'\s*$',
+                         '16h32m64s  ').groupdict().iteritems()),
+            set([('hours', '16'), ('mins', '32'), ('secs', '64')]))
 
     def test_timeparse_multipliers(self):
-        self.assertEqual(timeparse('32 min'),
+        '''Test parsing time unit multipliers.'''
+        self.assertEqual(timeparse.timeparse('32 min'),
                          1920)
-        self.assertEqual(timeparse('1 min'),
+        self.assertEqual(timeparse.timeparse('1 min'),
                          60)
-        self.assertEqual(timeparse('1 hours'),
+        self.assertEqual(timeparse.timeparse('1 hours'),
                          3600)
-        self.assertEqual(timeparse('1 day'),
+        self.assertEqual(timeparse.timeparse('1 day'),
                          86400)
-        self.assertEqual(timeparse('1 sec'),
+        self.assertEqual(timeparse.timeparse('1 sec'),
                          1)
 
     def test_timeparse_1(self):
-        self.assertEqual(timeparse('32m'), 1920)
+        '''timeparse test case 1.'''
+        self.assertEqual(timeparse.timeparse('32m'), 1920)
 
     def test_timeparse_2(self):
-        self.assertEqual(timeparse('2h32m'), 9120)
+        '''timeparse test case 2.'''
+        self.assertEqual(timeparse.timeparse('2h32m'), 9120)
 
     def test_timeparse_3(self):
-        self.assertEqual(timeparse('3d2h32m'), 268320)
+        '''timeparse test case 3.'''
+        self.assertEqual(timeparse.timeparse('3d2h32m'), 268320)
 
     def test_timeparse_4(self):
-        self.assertEqual(timeparse('1w3d2h32m'), 873120)
+        '''timeparse test case 4.'''
+        self.assertEqual(timeparse.timeparse('1w3d2h32m'), 873120)
 
     def test_timeparse_5(self):
-        self.assertEqual(timeparse('1w 3d 2h 32m'), 873120)
+        '''timeparse test case 5.'''
+        self.assertEqual(timeparse.timeparse('1w 3d 2h 32m'), 873120)
 
     def test_timeparse_6(self):
-        self.assertEqual(timeparse('1 w 3 d 2 h 32 m'), 873120)
+        '''timeparse test case 6.'''
+        self.assertEqual(timeparse.timeparse('1 w 3 d 2 h 32 m'), 873120)
 
     def test_timeparse_7(self):
-        self.assertEqual(timeparse('4:13'), 253)
+        '''timeparse test case 7.'''
+        self.assertEqual(timeparse.timeparse('4:13'), 253)
 
     def test_timeparse_8(self):
-        self.assertEqual(timeparse('4:13:02'), 15182)
+        '''timeparse test case 8.'''
+        self.assertEqual(timeparse.timeparse('4:13:02'), 15182)
 
     def test_timeparse_9(self):
-        self.assertAlmostEqual(timeparse('4:13:02.266'), 15182.266)
+        '''timeparse test case 9.'''
+        self.assertAlmostEqual(timeparse.timeparse('4:13:02.266'), 15182.266)
 
     def test_timeparse_10(self):
-        self.assertAlmostEqual(timeparse('2:04:13:02.266'), 187982.266)
+        '''timeparse test case 10.'''
+        self.assertAlmostEqual(timeparse.timeparse('2:04:13:02.266'),
+                               187982.266)
 
     def test_timeparse_11(self):
+        '''timeparse test case 11.'''
         # uptime format
-        self.assertEqual(timeparse('2 days,  4:13:02'), 187982)
+        self.assertEqual(timeparse.timeparse('2 days,  4:13:02'), 187982)
 
     def test_timeparse_12(self):
-        self.assertAlmostEqual(timeparse('2 days,  4:13:02.266'), 187982.266)
+        '''timeparse test case 12.'''
+        self.assertAlmostEqual(timeparse.timeparse('2 days,  4:13:02.266'),
+                               187982.266)
 
     def test_timeparse_13(self):
-        self.assertEqual(timeparse('5hr34m56s'), 20096)
+        '''timeparse test case 13.'''
+        self.assertEqual(timeparse.timeparse('5hr34m56s'), 20096)
 
     def test_timeparse_14(self):
-        self.assertEqual(timeparse('5 hours, 34 minutes, 56 seconds'), 20096)
+        '''timeparse test case 14.'''
+        self.assertEqual(timeparse.timeparse('5 hours, 34 minutes, 56 seconds'),
+                         20096)
 
     def test_timeparse_15(self):
-        self.assertEqual(timeparse('5 hrs, 34 mins, 56 secs'), 20096)
+        '''timeparse test case 15.'''
+        self.assertEqual(timeparse.timeparse('5 hrs, 34 mins, 56 secs'), 20096)
 
     def test_timeparse_16(self):
-        self.assertEqual(timeparse('2 days, 5 hours, 34 minutes, 56 seconds'),
-                         192896)
+        '''timeparse test case 16.'''
+        self.assertEqual(
+            timeparse.timeparse('2 days, 5 hours, 34 minutes, 56 seconds'),
+            192896)
 
     def test_timeparse_16b(self):
-        self.assertAlmostEqual(timeparse('1.75 s'), 1.75)
+        '''timeparse test case 16b.'''
+        self.assertAlmostEqual(timeparse.timeparse('1.75 s'), 1.75)
 
     def test_timeparse_16c(self):
-        self.assertAlmostEqual(timeparse('1.75 sec'), 1.75)
+        '''timeparse test case 16c.'''
+        self.assertAlmostEqual(timeparse.timeparse('1.75 sec'), 1.75)
 
     def test_timeparse_16d(self):
-        self.assertAlmostEqual(timeparse('1.75 secs'), 1.75)
+        '''timeparse test case 16d.'''
+        self.assertAlmostEqual(timeparse.timeparse('1.75 secs'), 1.75)
 
     def test_timeparse_16e(self):
-        self.assertAlmostEqual(timeparse('1.75 second'), 1.75)
+        '''timeparse test case 16e.'''
+        self.assertAlmostEqual(timeparse.timeparse('1.75 second'), 1.75)
 
     def test_timeparse_16f(self):
-        self.assertAlmostEqual(timeparse('1.75 seconds'), 1.75)
+        '''timeparse test case 16f.'''
+        self.assertAlmostEqual(timeparse.timeparse('1.75 seconds'), 1.75)
 
     def test_timeparse_17(self):
-        self.assertEqual(timeparse('1.2 m'), 72)
+        '''timeparse test case 17.'''
+        self.assertEqual(timeparse.timeparse('1.2 m'), 72)
 
     def test_timeparse_18(self):
-        self.assertEqual(timeparse('1.2 min'), 72)
+        '''timeparse test case 18.'''
+        self.assertEqual(timeparse.timeparse('1.2 min'), 72)
 
     def test_timeparse_19(self):
-        self.assertEqual(timeparse('1.2 mins'), 72)
+        '''timeparse test case 19.'''
+        self.assertEqual(timeparse.timeparse('1.2 mins'), 72)
 
     def test_timeparse_20(self):
-        self.assertEqual(timeparse('1.2 minute'), 72)
+        '''timeparse test case 20.'''
+        self.assertEqual(timeparse.timeparse('1.2 minute'), 72)
 
     def test_timeparse_21(self):
-        self.assertEqual(timeparse('1.2 minutes'), 72)
+        '''timeparse test case 21.'''
+        self.assertEqual(timeparse.timeparse('1.2 minutes'), 72)
 
     def test_timeparse_22(self):
-        self.assertEqual(timeparse('172 hours'), 619200)
+        '''timeparse test case 22.'''
+        self.assertEqual(timeparse.timeparse('172 hours'), 619200)
 
     def test_timeparse_23(self):
-        self.assertEqual(timeparse('172 hr'), 619200)
+        '''timeparse test case 23.'''
+        self.assertEqual(timeparse.timeparse('172 hr'), 619200)
 
     def test_timeparse_24(self):
-        self.assertEqual(timeparse('172 h'), 619200)
+        '''timeparse test case 24.'''
+        self.assertEqual(timeparse.timeparse('172 h'), 619200)
 
     def test_timeparse_25(self):
-        self.assertEqual(timeparse('172 hrs'), 619200)
+        '''timeparse test case 25.'''
+        self.assertEqual(timeparse.timeparse('172 hrs'), 619200)
 
     def test_timeparse_26(self):
-        self.assertEqual(timeparse('172 hour'), 619200)
+        '''timeparse test case 26.'''
+        self.assertEqual(timeparse.timeparse('172 hour'), 619200)
 
     def test_timeparse_27(self):
-        self.assertEqual(timeparse('1.24 days'), 107136)
+        '''timeparse test case 27.'''
+        self.assertEqual(timeparse.timeparse('1.24 days'), 107136)
 
     def test_timeparse_28(self):
-        self.assertEqual(timeparse('5 d'), 432000)
+        '''timeparse test case 28.'''
+        self.assertEqual(timeparse.timeparse('5 d'), 432000)
 
     def test_timeparse_29(self):
-        self.assertEqual(timeparse('5 day'), 432000)
+        '''timeparse test case 29.'''
+        self.assertEqual(timeparse.timeparse('5 day'), 432000)
 
     def test_timeparse_30(self):
-        self.assertEqual(timeparse('5 days'), 432000)
+        '''timeparse test case 30.'''
+        self.assertEqual(timeparse.timeparse('5 days'), 432000)
 
     def test_timeparse_31(self):
-        self.assertEqual(timeparse('5.6 wk'), 3386880)
+        '''timeparse test case 31.'''
+        self.assertEqual(timeparse.timeparse('5.6 wk'), 3386880)
 
     def test_timeparse_32(self):
-        self.assertEqual(timeparse('5.6 week'), 3386880)
+        '''timeparse test case 32.'''
+        self.assertEqual(timeparse.timeparse('5.6 week'), 3386880)
 
     def test_timeparse_33(self):
-        self.assertEqual(timeparse('5.6 weeks'), 3386880)
+        '''timeparse test case 33.'''
+        self.assertEqual(timeparse.timeparse('5.6 weeks'), 3386880)
 
     def test_doctest(self):
-        import timeparse
+        '''Run timeparse doctests.'''
         self.assertTrue(doctest.testmod(timeparse, raise_on_error=True))
