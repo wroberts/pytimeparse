@@ -15,6 +15,7 @@ SECS       = r'(?P<secs>[\d.]+)\s*(?:s|secs?|seconds?)'
 SEPARATORS = r'[,/]'
 MINCLOCK   = r'(?P<mins>\d{1,2}):(?P<secs>\d{2}(?:\.\d+)?)'
 HOURCLOCK  = r'(?P<hours>\d+):(?P<mins>\d{2}):(?P<secs>\d{2}(?:\.\d+)?)'
+DAYCLOCK   = r'(?P<days>\d+):(?P<hours>\d{2}):(?P<mins>\d{2}):(?P<secs>\d{2}(?:\.\d+)?)'
 
 OPT    = lambda x: '(?:{x})?'.format(x=x, SEPARATORS=SEPARATORS)
 OPTSEP = lambda x: '(?:{x}\s*(?:{SEPARATORS}\s*)?)?'.format(
@@ -35,6 +36,8 @@ TIMEFORMATS = [
         WEEKS=OPTSEP(WEEKS),
         DAYS=OPTSEP(DAYS),
         HOURCLOCK=HOURCLOCK),
+    r'{DAYCLOCK}'.format(
+        DAYCLOCK=DAYCLOCK),
     ]
 
 def t(x, y):
