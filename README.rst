@@ -51,7 +51,7 @@ expressions like the following:
 It returns the time as a number of seconds (an integer value of
 possible, otherwise a floating-point number)::
 
-    from timeparse.timeparse import timeparse
+    from pytimeparse.timeparse import timeparse
     >>> timeparse('1.2 minutes')
     72
 
@@ -59,7 +59,7 @@ A number of seconds can be converted back into a string using the
 ``datetime`` module in the standard library, as noted in
 `this other StackOverflow question <http://stackoverflow.com/questions/538666/python-format-timedelta-to-string>`_::
 
-    from timeparse.timeparse import timeparse
+    from pytimeparse.timeparse import timeparse
     import datetime
     >>> timeparse('10:33:36')
     38016
