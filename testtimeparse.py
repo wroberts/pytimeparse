@@ -38,7 +38,7 @@ class TestRegexes(unittest.TestCase):
 
     def test_time(self):
             self.assertGreater(
-                set(re.match(TIME + r'\s*$',
+                set(re.match(TIMEFORMATS[0] + r'\s*$',
                              '16h32m64s  ').groupdict().iteritems()),
                 set([('hours', '16'), ('mins', '32'), ('secs', '64')]))
 
@@ -73,23 +73,23 @@ class TestRegexes(unittest.TestCase):
         self.assertEqual(timeparse('1 w 3 d 2 h 32 m'), 873120)
 
     def test_timeparse_7(self):
-        self.assertEqual(timeparse('4:13'), None)   # NYI
+        self.assertEqual(timeparse('4:13'), 253)
 
     def test_timeparse_8(self):
-        self.assertEqual(timeparse('4:13:02'), None)   # NYI
+        self.assertEqual(timeparse('4:13:02'), 15182)
 
     def test_timeparse_9(self):
-        self.assertEqual(timeparse('4:13:02.266'), None)   # NYI
+        self.assertAlmostEqual(timeparse('4:13:02.266'), 15182.266)
 
     def test_timeparse_10(self):
-        self.assertEqual(timeparse('2:04:13:02.266'), None)   # NYI
+        self.assertAlmostEqual(timeparse('2:04:13:02.266'), 187982.266)
 
     def test_timeparse_11(self):
         # uptime format
-        self.assertEqual(timeparse('2 days,  4:13:02'), None)   # NYI
+        self.assertEqual(timeparse('2 days,  4:13:02'), 187982)
 
     def test_timeparse_12(self):
-        self.assertEqual(timeparse('2 days,  4:13:02.266'), None)   # NYI
+        self.assertAlmostEqual(timeparse('2 days,  4:13:02.266'), 187982.266)
 
     def test_timeparse_13(self):
         self.assertEqual(timeparse('5hr34m56s'), 20096)
