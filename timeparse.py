@@ -57,7 +57,7 @@ MULTIPLIERS = dict([
 
 def timeparse(sval):
     match = re.match(TIME + r'\s*$', sval)
-    if match:
+    if match and match.group(0).strip():
         mdict = match.groupdict()
         # if all of the fields are integer numbers
         if all(v.isdigit() for v in mdict.values() if v):
