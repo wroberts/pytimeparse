@@ -1,4 +1,5 @@
 from timeparse import *
+import doctest
 import unittest
 
 class TestRegexes(unittest.TestCase):
@@ -169,3 +170,7 @@ class TestRegexes(unittest.TestCase):
 
     def test_timeparse_33(self):
         self.assertEqual(timeparse('5.6 weeks'), 3386880)
+
+    def test_doctest(self):
+        import timeparse
+        self.assertTrue(doctest.testmod(timeparse, raise_on_error=True))
