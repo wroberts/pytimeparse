@@ -64,13 +64,13 @@ class TestRegexes(unittest.TestCase):
         self.assertEqual(timeparse('3d2h32m'), 268320)
 
     def test_timeparse_4(self):
-        self.assertEqual(timeparse('1w3d2h32m'), None)   # NYI
+        self.assertEqual(timeparse('1w3d2h32m'), 873120)
 
     def test_timeparse_5(self):
-        self.assertEqual(timeparse('1w 3d 2h 32m'), None)   # NYI
+        self.assertEqual(timeparse('1w 3d 2h 32m'), 873120)
 
     def test_timeparse_6(self):
-        self.assertEqual(timeparse('1 w 3 d 2 h 32 m'), None)   # NYI
+        self.assertEqual(timeparse('1 w 3 d 2 h 32 m'), 873120)
 
     def test_timeparse_7(self):
         self.assertEqual(timeparse('4:13'), None)   # NYI
@@ -105,19 +105,19 @@ class TestRegexes(unittest.TestCase):
                          192896)
 
     def test_timeparse_17(self):
-        self.assertEqual(timeparse('1.2 m'), None)   # NYI
+        self.assertEqual(timeparse('1.2 m'), 72)
 
     def test_timeparse_18(self):
-        self.assertEqual(timeparse('1.2 min'), None)   # NYI
+        self.assertEqual(timeparse('1.2 min'), 72)
 
     def test_timeparse_19(self):
-        self.assertEqual(timeparse('1.2 mins'), None)   # NYI
+        self.assertEqual(timeparse('1.2 mins'), 72)
 
     def test_timeparse_20(self):
-        self.assertEqual(timeparse('1.2 minute'), None)   # NYI
+        self.assertEqual(timeparse('1.2 minute'), 72)
 
     def test_timeparse_21(self):
-        self.assertEqual(timeparse('1.2 minutes'), None)   # NYI
+        self.assertEqual(timeparse('1.2 minutes'), 72)
 
     def test_timeparse_22(self):
         self.assertEqual(timeparse('172 hours'), 619200)
@@ -135,7 +135,7 @@ class TestRegexes(unittest.TestCase):
         self.assertEqual(timeparse('172 hour'), 619200)
 
     def test_timeparse_27(self):
-        self.assertEqual(timeparse('1.24 days'), None)   # NYI
+        self.assertEqual(timeparse('1.24 days'), 107136)
 
     def test_timeparse_28(self):
         self.assertEqual(timeparse('5 d'), 432000)
@@ -147,10 +147,10 @@ class TestRegexes(unittest.TestCase):
         self.assertEqual(timeparse('5 days'), 432000)
 
     def test_timeparse_31(self):
-        self.assertEqual(timeparse('5.6 wk'), None)   # NYI
+        self.assertEqual(timeparse('5.6 wk'), 3386880)
 
     def test_timeparse_32(self):
-        self.assertEqual(timeparse('5.6 week'), None)   # NYI
+        self.assertEqual(timeparse('5.6 week'), 3386880)
 
     def test_timeparse_33(self):
-        self.assertEqual(timeparse('5.6 weeks'), None)   # NYI
+        self.assertEqual(timeparse('5.6 weeks'), 3386880)
