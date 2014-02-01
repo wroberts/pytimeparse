@@ -61,10 +61,10 @@ A number of seconds can be converted back into a string using the
 
     from pytimeparse.timeparse import timeparse
     import datetime
-    >>> timeparse('10:33:36')
-    38016
-    >>> str(datetime.timedelta(seconds=38016))
-    '10:33:36'
+    >>> timeparse('1 day, 14:20:16')
+    138016
+    >>> str(datetime.timedelta(seconds=138016))
+    '1 day, 14:20:16'
 
 Future work
 -----------
