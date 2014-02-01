@@ -5,28 +5,19 @@
 
 import re
 
-#YEARS = r'(?P<years>\d+)\s*(?:ys?|yrs?.?|years?)'
-
-#MONTHS = r'(?P<months>\d+)\s*(?:mos?.?|mths?.?|months?)'
-
-WEEKS = r'(?P<weeks>[\d.]+)\s*(?:w|wks?|weeks?)'
-
-DAYS = r'(?P<days>[\d.]+)\s*(?:d|dys?|days?)'
-
-HOURS = r'(?P<hours>[\d.]+)\s*(?:h|hrs?|hours?)'
-
-MINS = r'(?P<mins>[\d.]+)\s*(?:m|(mins?)|(minutes?))'
-
-SECS = r'(?P<secs>[\d.]+)\s*(?:s|secs?|seconds?)'
-
+#YEARS     = r'(?P<years>\d+)\s*(?:ys?|yrs?.?|years?)'
+#MONTHS    = r'(?P<months>\d+)\s*(?:mos?.?|mths?.?|months?)'
+WEEKS      = r'(?P<weeks>[\d.]+)\s*(?:w|wks?|weeks?)'
+DAYS       = r'(?P<days>[\d.]+)\s*(?:d|dys?|days?)'
+HOURS      = r'(?P<hours>[\d.]+)\s*(?:h|hrs?|hours?)'
+MINS       = r'(?P<mins>[\d.]+)\s*(?:m|(mins?)|(minutes?))'
+SECS       = r'(?P<secs>[\d.]+)\s*(?:s|secs?|seconds?)'
 SEPARATORS = r'[,/]'
 
 OPT    = lambda x: '(?:{x})?'.format(x=x, SEPARATORS=SEPARATORS)
-OPTSEP = lambda x: '(?:{x}\s*(?:{SEPARATORS}\s*)?)?'.format(x=x, SEPARATORS=SEPARATORS)
+OPTSEP = lambda x: '(?:{x}\s*(?:{SEPARATORS}\s*)?)?'.format(
+    x=x, SEPARATORS=SEPARATORS)
 
-#TIME = r'(?:{HOURS}\s*(?:{SEPARATORS}\s*)?)?(?:{MINS}\s*(?:{SEPARATORS}\s*)?\s*)?(?:{SECS})?'.format(HOURS=HOURS, SEPARATORS=SEPARATORS, MINS=MINS, SECS=SECS)
-
-#TIME = '{YEARS}\s*{MONTHS}\s*{DAYS}\s*{HOURS}\s*{MINS}\s*{SECS}'.format(
 TIME = '{WEEKS}\s*{DAYS}\s*{HOURS}\s*{MINS}\s*{SECS}'.format(
     #YEARS=OPTSEP(YEARS),
     #MONTHS=OPTSEP(MONTHS),
@@ -36,22 +27,19 @@ TIME = '{WEEKS}\s*{DAYS}\s*{HOURS}\s*{MINS}\s*{SECS}'.format(
     MINS=OPTSEP(MINS),
     SECS=OPT(SECS))
 
-#TIME = r'{HOURS}\s*{MINS}\s*{SECS}'.format(HOURS=HOURS, SEPARATORS=SEPARATORS, MINS=MINS, SECS=SECS)
-
 def t(x, y):
     if re.match(x, y):
         print re.match(x, y).group(0)
         print re.match(x, y).groupdict()
-#RE =
 
 MULTIPLIERS = dict([
-    #('years', 60 * 60 * 24 * 365),
+    #('years',  60 * 60 * 24 * 365),
     #('months', 60 * 60 * 24 * 30),
-    ('weeks', 60 * 60 * 24 * 7),
-    ('days',  60 * 60 * 24),
-    ('hours', 60 * 60),
-    ('mins',  60),
-    ('secs',  1)
+    ('weeks',   60 * 60 * 24 * 7),
+    ('days',    60 * 60 * 24),
+    ('hours',   60 * 60),
+    ('mins',    60),
+    ('secs',    1)
     ])
 
 def timeparse(sval):
