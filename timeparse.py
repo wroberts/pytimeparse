@@ -78,5 +78,5 @@ def timeparse(sval):
                 (int(mdict['secs'], 10) if mdict['secs'] else 0))
         else:
             # SECS is a float, we will return a float
-            print 'float secs'  # NYI
-            pass
+            return sum([MULTIPLIERS[k] * float(v) for (k, v) in
+                        mdict.items() if v is not None])

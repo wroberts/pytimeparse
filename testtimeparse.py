@@ -104,6 +104,21 @@ class TestRegexes(unittest.TestCase):
         self.assertEqual(timeparse('2 days, 5 hours, 34 minutes, 56 seconds'),
                          192896)
 
+    def test_timeparse_16b(self):
+        self.assertAlmostEqual(timeparse('1.75 s'), 1.75)
+
+    def test_timeparse_16c(self):
+        self.assertAlmostEqual(timeparse('1.75 sec'), 1.75)
+
+    def test_timeparse_16d(self):
+        self.assertAlmostEqual(timeparse('1.75 secs'), 1.75)
+
+    def test_timeparse_16e(self):
+        self.assertAlmostEqual(timeparse('1.75 second'), 1.75)
+
+    def test_timeparse_16f(self):
+        self.assertAlmostEqual(timeparse('1.75 seconds'), 1.75)
+
     def test_timeparse_17(self):
         self.assertEqual(timeparse('1.2 m'), 72)
 
