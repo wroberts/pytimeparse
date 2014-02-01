@@ -3,7 +3,6 @@
 #  implementation
 # ------------------------------------------------------------
 
-from collections import defaultdict
 import re
 
 #YEARS = r'(?P<years>\d+)\s*(?:ys?|yrs?.?|years?)'
@@ -61,12 +60,8 @@ def timeparse(sval):
         mdict = match.groupdict()
         # if all of the fields are integer numbers
         if all(v.isdigit() for v in mdict.values() if v):
-            fields = defaultdict(
-                int,
-                ((k, int(v, 10))
-                 for (k, v) in mdict.iteritems()
-                 if v is not None))
-            return sum([MULTIPLIERS[k] * v for (k, v) in fields.iteritems()])
+            return sum([MULTIPLIERS[k] * int(v, 10) for (k, v) in
+                        mdict.items() if v is not None])
         # if SECS is an integer number
         elif ('secs' not in mdict or
               mdict['secs'] is None or
