@@ -10,13 +10,15 @@ import re
 
 #MONTHS = r'(?P<months>\d+)\s*(?:mos?.?|mths?.?|months?)'
 
-DAYS = r'(?P<days>\d+)\s*(?:d|dys?|days?)'
+WEEKS = r'(?P<weeks>[\d.]+)\s*(?:w|wks?|weeks?)'
 
-HOURS = r'(?P<hours>\d+)\s*(?:h|hrs?|hours?)'
+DAYS = r'(?P<days>[\d.]+)\s*(?:d|dys?|days?)'
 
-MINS = r'(?P<mins>\d+)\s*(?:m|(mins?)|(minutes?))'
+HOURS = r'(?P<hours>[\d.]+)\s*(?:h|hrs?|hours?)'
 
-SECS = r'(?P<secs>\d+)\s*(?:s|secs?|seconds?)'
+MINS = r'(?P<mins>[\d.]+)\s*(?:m|(mins?)|(minutes?))'
+
+SECS = r'(?P<secs>[\d.]+)\s*(?:s|secs?|seconds?)'
 
 SEPARATORS = r'[,/]'
 
@@ -26,9 +28,10 @@ OPTSEP = lambda x: '(?:{x}\s*(?:{SEPARATORS}\s*)?)?'.format(x=x, SEPARATORS=SEPA
 #TIME = r'(?:{HOURS}\s*(?:{SEPARATORS}\s*)?)?(?:{MINS}\s*(?:{SEPARATORS}\s*)?\s*)?(?:{SECS})?'.format(HOURS=HOURS, SEPARATORS=SEPARATORS, MINS=MINS, SECS=SECS)
 
 #TIME = '{YEARS}\s*{MONTHS}\s*{DAYS}\s*{HOURS}\s*{MINS}\s*{SECS}'.format(
-TIME = '{DAYS}\s*{HOURS}\s*{MINS}\s*{SECS}'.format(
+TIME = '{WEEKS}\s*{DAYS}\s*{HOURS}\s*{MINS}\s*{SECS}'.format(
     #YEARS=OPTSEP(YEARS),
     #MONTHS=OPTSEP(MONTHS),
+    WEEKS=OPTSEP(WEEKS),
     DAYS=OPTSEP(DAYS),
     HOURS=OPTSEP(HOURS),
     MINS=OPTSEP(MINS),
@@ -45,23 +48,35 @@ def t(x, y):
 MULTIPLIERS = dict([
     #('years', 60 * 60 * 24 * 365),
     #('months', 60 * 60 * 24 * 30),
-    ('days', 60 * 60 * 24),
+    ('weeks', 60 * 60 * 24 * 7),
+    ('days',  60 * 60 * 24),
     ('hours', 60 * 60),
-    ('mins', 60),
-    ('secs', 1)
+    ('mins',  60),
+    ('secs',  1)
     ])
 
 def timeparse(sval):
     match = re.match(TIME + r'\s*$', sval)
     if match:
-        fields = defaultdict(
-            int,
-            ((k, int(v, 10))
-             for (k, v) in match.groupdict().iteritems()
-             if v is not None))
-        return sum([MULTIPLIERS[k] * v for (k, v) in fields.iteritems()])
-        #return fields
-        #fields = defaultdict(int).update(
-        #    dict((k, int(v, 10))
-        #         for (k, v) in match.groupdict()))
-        #return fields
+        mdict = match.groupdict()
+        # if all of the fields are integer numbers
+        if all(v.isdigit() for v in mdict.values() if v):
+            fields = defaultdict(
+                int,
+                ((k, int(v, 10))
+                 for (k, v) in mdict.iteritems()
+                 if v is not None))
+            return sum([MULTIPLIERS[k] * v for (k, v) in fields.iteritems()])
+        # if SECS is an integer number
+        elif ('secs' not in mdict or
+              mdict['secs'] is None or
+              mdict['secs'].isdigit()):
+            # we will return an integer
+            return (
+                int(sum([MULTIPLIERS[k] * float(v) for (k, v) in
+                         mdict.items() if k != 'secs' and v is not None])) +
+                (int(mdict['secs'], 10) if mdict['secs'] else 0))
+        else:
+            # SECS is a float, we will return a float
+            print 'float secs'  # NYI
+            pass
