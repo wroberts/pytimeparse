@@ -1,6 +1,6 @@
-======================================
- timeparse.py: time expression parser
-======================================
+=====================================
+ pytimeparse: time expression parser
+=====================================
 
 Copyright (c) 2014 Will Roberts <wildwilhelm@gmail.com>
 
@@ -48,7 +48,7 @@ expressions like the following:
 - ``5.6 week``
 - ``5.6 weeks``
 
-It returns the time as a number of seconds (an integer value of
+It returns the time as a number of seconds (an integer value if
 possible, otherwise a floating-point number)::
 
     from pytimeparse.timeparse import timeparse
