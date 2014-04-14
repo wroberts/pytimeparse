@@ -14,7 +14,7 @@ with open('README.rst') as file:
     long_description = file.read()
 
 setup(name             = 'pytimeparse',
-      version          = '1.0',
+      version          = '1.0.0',
       description      = 'Time expression parser',
       author           = 'Will Roberts',
       author_email     = 'wildwilhelm@gmail.com',
