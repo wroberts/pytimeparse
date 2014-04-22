@@ -51,7 +51,7 @@ expressions like the following:
 It returns the time as a number of seconds (an integer value if
 possible, otherwise a floating-point number)::
 
-    from pytimeparse.timeparse import timeparse
+    >>> from pytimeparse.timeparse import timeparse
     >>> timeparse('1.2 minutes')
     72
 
@@ -59,8 +59,8 @@ A number of seconds can be converted back into a string using the
 ``datetime`` module in the standard library, as noted in
 `this other StackOverflow question <http://stackoverflow.com/questions/538666/python-format-timedelta-to-string>`_::
 
-    from pytimeparse.timeparse import timeparse
-    import datetime
+    >>> from pytimeparse.timeparse import timeparse
+    >>> import datetime
     >>> timeparse('1 day, 14:20:16')
     138016
     >>> str(datetime.timedelta(seconds=138016))
@@ -72,3 +72,4 @@ Future work
 1. Give the user more flexibility over which characters to use as
    separators between fields in a time expression (e.g., ``+`` might
    be useful).
+2. Internationalisation?
