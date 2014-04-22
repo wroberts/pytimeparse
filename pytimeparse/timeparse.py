@@ -41,6 +41,7 @@ HOURS       = r'(?P<hours>[\d.]+)\s*(?:h|hrs?|hours?)'
 MINS        = r'(?P<mins>[\d.]+)\s*(?:m|(mins?)|(minutes?))'
 SECS        = r'(?P<secs>[\d.]+)\s*(?:s|secs?|seconds?)'
 SEPARATORS  = r'[,/]'
+SECCLOCK    = r':(?P<secs>\d{2}(?:\.\d+)?)'
 MINCLOCK    = r'(?P<mins>\d{1,2}):(?P<secs>\d{2}(?:\.\d+)?)'
 HOURCLOCK   = r'(?P<hours>\d+):(?P<mins>\d{2}):(?P<secs>\d{2}(?:\.\d+)?)'
 DAYCLOCK    = (r'(?P<days>\d+):(?P<hours>\d{2}):'
@@ -67,6 +68,8 @@ TIMEFORMATS = [
         HOURCLOCK=HOURCLOCK),
     r'{DAYCLOCK}'.format(
         DAYCLOCK=DAYCLOCK),
+    r'{SECCLOCK}'.format(
+        SECCLOCK=SECCLOCK),
     ]
 
 MULTIPLIERS = dict([
@@ -91,6 +94,8 @@ def timeparse(sval):
 
     >>> timeparse('1:24')
     84
+    >>> timeparse(':22')
+    22
     >>> timeparse('1 minute, 24 secs')
     84
     >>> timeparse('1m24s')
