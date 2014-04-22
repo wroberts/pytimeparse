@@ -102,6 +102,10 @@ class TestTimeparse(unittest.TestCase):
         '''timeparse test case 7.'''
         self.assertEqual(timeparse.timeparse('4:13'), 253)
 
+    def test_timeparse_bare_seconds(self):
+        '''timeparse test bare seconds, without minutes.'''
+        self.assertEqual(timeparse.timeparse(':13'), 13)
+
     def test_timeparse_8(self):
         '''timeparse test case 8.'''
         self.assertEqual(timeparse.timeparse('4:13:02'), 15182)
