@@ -84,7 +84,29 @@ MULTIPLIERS = dict([
         ('secs',    1)
         ])
 
-def timeparse(sval):
+def _interpret_as_minutes(sval, mdict):
+    """
+    Times like "1:22" are ambiguous; do they represent minutes and seconds
+    or hours and minutes?  By default, timeparse assumes the latter.  Call
+    this function after parsing out a dictionary to change that assumption.
+    
+    >>> import pprint
+    >>> pprint.pprint(_interpret_as_minutes('1:24', {'secs': '24', 'mins': '1'}))
+    {'hours': '1', 'mins': '24'}
+    """
+    if (    sval.count(':') == 1 
+        and '.' not in sval
+        and (('hours' not in mdict) or (mdict['hours'] is None))
+        and (('days' not in mdict) or (mdict['days'] is None))
+        and (('weeks' not in mdict) or (mdict['weeks'] is None))
+        ):   
+        mdict['hours'] = mdict['mins']
+        mdict['mins'] = mdict['secs']
+        mdict.pop('secs')
+        pass
+    return mdict
+
+def timeparse(sval, granularity='seconds'):
     '''
     Parse a time expression, returning it as a number of seconds.  If
     possible, the return value will be an `int`; if this is not
@@ -106,11 +128,21 @@ def timeparse(sval):
     72
     >>> timeparse('1.2 seconds')
     1.2
+    
+    If granularity is specified as ``minutes``, then ambiguous digits following
+    a colon will be interpreted as minutes; otherwise they are considered seconds.
+    
+    >>> timeparse('1:30')
+    90
+    >>> timeparse('1:30', granularity='minutes')
+    5400
     '''
     for timefmt in TIMEFORMATS:
         match = re.match(r'\s*' + timefmt + r'\s*$', sval, re.I)
         if match and match.group(0).strip():
             mdict = match.groupdict()
+            if granularity == 'minutes':
+                mdict = _interpret_as_minutes(sval, mdict)
             # if all of the fields are integer numbers
             if all(v.isdigit() for v in list(mdict.values()) if v):
                 return sum([MULTIPLIERS[k] * int(v, 10) for (k, v) in

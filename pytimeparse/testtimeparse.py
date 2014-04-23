@@ -119,6 +119,22 @@ class TestTimeparse(unittest.TestCase):
         self.assertAlmostEqual(timeparse.timeparse('2:04:13:02.266'),
                                187982.266)
 
+    def test_timeparse_granularity_1(self):
+        '''Check that minute-level granularity applies correctly.'''
+        self.assertEqual(timeparse.timeparse('4:32', granularity='minutes'), 272*60)
+        
+    def test_timeparse_granularity_2(self):
+        '''Check that minute-level granularity does not apply inappropriately.'''
+        self.assertEqual(timeparse.timeparse('4:32:02', granularity='minutes'), 272*60+2)
+        
+    def test_timeparse_granularity_3(self):
+        '''Check that minute-level granularity does not apply inappropriately.'''
+        self.assertAlmostEqual(timeparse.timeparse('7:02.223', granularity='minutes'), 7*60 + 2.223)
+        
+    def test_timeparse_granularity_4(self):
+        '''Check that minute-level granularity does not apply inappropriately.'''
+        self.assertEqual(timeparse.timeparse('0:02', granularity='seconds'), 2)
+        
     def test_timeparse_11(self):
         '''timeparse test case 11.'''
         # uptime format
