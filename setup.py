@@ -8,10 +8,20 @@ setup.py
 distutils setup script for pytimeparse.
 '''
 
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
+import sys
 
 with open('README.rst') as file:
-    long_description = file.read()
+    LONG_DESCRIPTION = file.read()
+
+# http://stackoverflow.com/a/19719657/1062499
+if sys.version_info[0] == 2:
+    INSTALL_REQUIRES = ['future']
+elif sys.version_info[0] == 3:
+    INSTALL_REQUIRES = []
 
 setup(name             = 'pytimeparse',
       version          = '1.1.0',
@@ -20,5 +30,7 @@ setup(name             = 'pytimeparse',
       author_email     = 'wildwilhelm@gmail.com',
       url              = 'https://github.com/wroberts/pytimeparse',
       packages         = ['pytimeparse'],
-      long_description = long_description,
+      license          = 'MIT',
+      install_requires = INSTALL_REQUIRES,
+      long_description = LONG_DESCRIPTION,
 )
