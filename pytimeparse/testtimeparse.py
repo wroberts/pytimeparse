@@ -10,7 +10,7 @@ Unit tests for the `timeparse` module.
 
 import doctest
 import re
-import timeparse
+from pytimeparse import timeparse
 import unittest
 
 class TestTimeparse(unittest.TestCase):
@@ -58,7 +58,7 @@ class TestTimeparse(unittest.TestCase):
         '''Test parsing time expression.'''
         self.assertGreater(
             set(re.match(timeparse.TIMEFORMATS[0] + r'\s*$',
-                         '16h32m64s  ').groupdict().iteritems()),
+                         '16h32m64s  ').groupdict().items()),
             set([('hours', '16'), ('mins', '32'), ('secs', '64')]))
 
     def test_timeparse_multipliers(self):

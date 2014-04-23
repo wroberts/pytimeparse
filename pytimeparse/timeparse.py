@@ -1,3 +1,5 @@
+from future.builtins import dict
+from future.builtins import int
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -110,9 +112,9 @@ def timeparse(sval):
         if match and match.group(0).strip():
             mdict = match.groupdict()
             # if all of the fields are integer numbers
-            if all(v.isdigit() for v in mdict.values() if v):
+            if all(v.isdigit() for v in list(mdict.values()) if v):
                 return sum([MULTIPLIERS[k] * int(v, 10) for (k, v) in
-                            mdict.items() if v is not None])
+                            list(mdict.items()) if v is not None])
             # if SECS is an integer number
             elif ('secs' not in mdict or
                   mdict['secs'] is None or
@@ -120,9 +122,9 @@ def timeparse(sval):
                 # we will return an integer
                 return (
                     int(sum([MULTIPLIERS[k] * float(v) for (k, v) in
-                             mdict.items() if k != 'secs' and v is not None])) +
+                             list(mdict.items()) if k != 'secs' and v is not None])) +
                     (int(mdict['secs'], 10) if mdict['secs'] else 0))
             else:
                 # SECS is a float, we will return a float
                 return sum([MULTIPLIERS[k] * float(v) for (k, v) in
-                            mdict.items() if v is not None])
+                            list(mdict.items()) if v is not None])
