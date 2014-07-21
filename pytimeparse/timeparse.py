@@ -35,6 +35,7 @@ kinds of time expressions.
 
 import re
 
+SIGN        = r'(?P<sign>[+|-])?'
 #YEARS      = r'(?P<years>\d+)\s*(?:ys?|yrs?.?|years?)'
 #MONTHS     = r'(?P<months>\d+)\s*(?:mos?.?|mths?.?|months?)'
 WEEKS       = r'(?P<weeks>[\d.]+)\s*(?:w|wks?|weeks?)'
@@ -128,6 +129,13 @@ def timeparse(sval, granularity='seconds'):
     72
     >>> timeparse('1.2 seconds')
     1.2
+
+    Time expressions can be signed.
+
+    >>> timeparse('- 1 minute')
+    -60
+    >>> timeparse('+ 1 minute')
+    60
     
     If granularity is specified as ``minutes``, then ambiguous digits following
     a colon will be interpreted as minutes; otherwise they are considered seconds.
@@ -137,6 +145,9 @@ def timeparse(sval, granularity='seconds'):
     >>> timeparse('1:30', granularity='minutes')
     5400
     '''
+    match = re.match(r'\s*' + SIGN + r'\s*(?P<unsigned>.*)$', sval)
+    sign = -1 if match.groupdict()['sign'] == '-' else 1
+    sval = match.groupdict()['unsigned']
     for timefmt in TIMEFORMATS:
         match = re.match(r'\s*' + timefmt + r'\s*$', sval, re.I)
         if match and match.group(0).strip():
@@ -145,7 +156,7 @@ def timeparse(sval, granularity='seconds'):
                 mdict = _interpret_as_minutes(sval, mdict)
             # if all of the fields are integer numbers
             if all(v.isdigit() for v in list(mdict.values()) if v):
-                return sum([MULTIPLIERS[k] * int(v, 10) for (k, v) in
+                return sign * sum([MULTIPLIERS[k] * int(v, 10) for (k, v) in
                             list(mdict.items()) if v is not None])
             # if SECS is an integer number
             elif ('secs' not in mdict or
@@ -153,10 +164,10 @@ def timeparse(sval, granularity='seconds'):
                   mdict['secs'].isdigit()):
                 # we will return an integer
                 return (
-                    int(sum([MULTIPLIERS[k] * float(v) for (k, v) in
+                    sign * int(sum([MULTIPLIERS[k] * float(v) for (k, v) in
                              list(mdict.items()) if k != 'secs' and v is not None])) +
                     (int(mdict['secs'], 10) if mdict['secs'] else 0))
             else:
                 # SECS is a float, we will return a float
-                return sum([MULTIPLIERS[k] * float(v) for (k, v) in
+                return sign * sum([MULTIPLIERS[k] * float(v) for (k, v) in
                             list(mdict.items()) if v is not None])
