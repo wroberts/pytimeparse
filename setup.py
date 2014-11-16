@@ -24,7 +24,7 @@ elif sys.version_info[0] == 3:
     INSTALL_REQUIRES = []
 
 setup(name             = 'pytimeparse',
-      version          = '1.1.1',
+      version          = '1.1.2',
       description      = 'Time expression parser',
       author           = 'Will Roberts',
       author_email     = 'wildwilhelm@gmail.com',
