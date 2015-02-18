@@ -25,4 +25,4 @@ except IOError as ex:
     __version__ = "unknown (%s)" % ex
 
 # import top-level functionality
-from .timeparse import timeparse
+from .timeparse import timeparse as parse

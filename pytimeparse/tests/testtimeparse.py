@@ -8,9 +8,10 @@ testtimeparse.py
 Unit tests for the `timeparse` module.
 '''
 
+from __future__ import absolute_import
 import doctest
 import re
-from pytimeparse import timeparse
+from .. import timeparse
 import unittest
 
 class TestTimeparse(unittest.TestCase):
