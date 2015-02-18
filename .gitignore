@@ -1,5 +1,6 @@
 *.pyc
 *~
+.DS_Store
 /MANIFEST
 /dist/
 /pytimeparse.egg-info/
