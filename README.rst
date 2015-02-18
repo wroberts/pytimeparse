@@ -2,6 +2,9 @@
  pytimeparse: time expression parser
 =====================================
 
+.. image:: https://travis-ci.org/wroberts/pytimeparse.svg?branch=master
+    :target: https://travis-ci.org/wroberts/pytimeparse
+
 Copyright (c) 2014 Will Roberts <wildwilhelm@gmail.com>
 
 Licensed under the MIT License (see source file ``timeparse.py`` for
