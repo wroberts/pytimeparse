@@ -6,7 +6,7 @@
     :target: https://travis-ci.org/wroberts/pytimeparse
     :alt: Travis CI build status
 
-.. image:: https://pypip.in/version/pytimeparse/badge.png
+.. image:: https://pypip.in/version/pytimeparse/badge.svg
     :target: https://pypi.python.org/pypi/pytimeparse/
     :alt: Latest Version
 
