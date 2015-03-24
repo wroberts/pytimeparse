@@ -5,6 +5,9 @@ python:
   - "3.3"
   - "3.4"
 # command to install dependencies
-install: "pip install ."
+install: "pip install . coveralls"
 # command to run tests
-script: nosetests
+script:
+  coverage run --source=pytimeparse setup.py test
+after_success:
+  coveralls
