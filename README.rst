@@ -4,6 +4,11 @@
 
 .. image:: https://travis-ci.org/wroberts/pytimeparse.svg?branch=master
     :target: https://travis-ci.org/wroberts/pytimeparse
+    :alt: Travis CI build status
+
+.. image:: https://pypip.in/version/pytimeparse/badge.png
+    :target: https://pypi.python.org/pypi/pytimeparse/
+    :alt: Latest Version
 
 Copyright (c) 2014 Will Roberts <wildwilhelm@gmail.com>
 
