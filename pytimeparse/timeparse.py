@@ -31,7 +31,6 @@ kinds of time expressions.
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from builtins import dict, int
 import re
 
 SIGN        = r'(?P<sign>[+|-])?'
