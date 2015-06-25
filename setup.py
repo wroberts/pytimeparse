@@ -22,11 +22,6 @@ with open(path.join(HERE, 'pytimeparse', 'VERSION'), encoding='utf-8') as f:
 with open(path.join(HERE, 'README.rst'), encoding='utf-8') as f:
     LONG_DESCRIPTION = f.read()
 
-# http://stackoverflow.com/a/19719657/1062499
-INSTALL_REQUIRES = []
-if sys.version_info.major == 2:
-    INSTALL_REQUIRES.append('future >= 0.14')
-
 setup(
     name='pytimeparse',
 
@@ -80,12 +75,6 @@ setup(
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
     packages=find_packages(exclude=[]),
-
-    # List run-time dependencies here.  These will be installed by pip when your
-    # project is installed. For an analysis of "install_requires" vs pip's
-    # requirements files see:
-    # https://packaging.python.org/en/latest/requirements.html
-    install_requires=INSTALL_REQUIRES,
 
     # List additional groups of dependencies here (e.g. development dependencies).
     # You can install these using the following syntax, for example:
