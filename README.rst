@@ -10,7 +10,7 @@
     :target: https://coveralls.io/r/wroberts/pytimeparse
     :alt: Test code coverage
 
-.. image:: https://pypip.in/version/pytimeparse/badge.svg
+.. image:: https://img.shields.io/pypi/v/nine.svg
     :target: https://pypi.python.org/pypi/pytimeparse/
     :alt: Latest Version
 
