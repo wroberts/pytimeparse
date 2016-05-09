@@ -5,7 +5,7 @@ python:
   - "3.3"
   - "3.4"
 # command to install dependencies
-install: "pip install . coverage<4 coveralls"
+install: "pip install . 'coverage<4' coveralls"
 # command to run tests
 script:
   coverage run --source=pytimeparse setup.py test
