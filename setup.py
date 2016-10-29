@@ -11,7 +11,6 @@ distutils setup script for pytimeparse.
 from setuptools import setup, find_packages  # Always prefer setuptools over distutils
 from codecs import open  # To use a consistent encoding
 from os import path
-import sys
 
 HERE = path.abspath(path.dirname(__file__))
 
@@ -41,7 +40,7 @@ setup(
     author_email='wildwilhelm@gmail.com',
 
     # Choose your license
-    license='MIT',
+    license='License :: OSI Approved :: MIT License',
 
     # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
