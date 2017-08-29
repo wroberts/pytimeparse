@@ -77,6 +77,10 @@ TIMEFORMATS = [
         #MONTHS=MONTHS),
     ]
 
+COMPILED_SIGN = re.compile(r'\s*' + SIGN + r'\s*(?P<unsigned>.*)$')
+COMPILED_TIMEFORMATS = [re.compile(r'\s*' + timefmt + r'\s*$', re.I)
+                        for timefmt in TIMEFORMATS]
+
 MULTIPLIERS = dict([
         #('years',  60 * 60 * 24 * 365),
         #('months', 60 * 60 * 24 * 30),
@@ -149,11 +153,11 @@ def timeparse(sval, granularity='seconds'):
     >>> timeparse('1:30', granularity='minutes')
     5400
     '''
-    match = re.match(r'\s*' + SIGN + r'\s*(?P<unsigned>.*)$', sval)
+    match = COMPILED_SIGN.match(sval)
     sign = -1 if match.groupdict()['sign'] == '-' else 1
     sval = match.groupdict()['unsigned']
-    for timefmt in TIMEFORMATS:
-        match = re.match(r'\s*' + timefmt + r'\s*$', sval, re.I)
+    for timefmt in COMPILED_TIMEFORMATS:
+        match = timefmt.match(sval)
         if match and match.group(0).strip():
             mdict = match.groupdict()
             if granularity == 'minutes':
