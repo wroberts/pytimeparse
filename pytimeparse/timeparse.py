@@ -33,7 +33,7 @@ kinds of time expressions.
 
 import re
 
-SIGN        = r'(?P<sign>[+|-])?'
+SIGN        = r'(?P<sign>[+|-]|\+)?'
 #YEARS      = r'(?P<years>\d+)\s*(?:ys?|yrs?.?|years?)'
 #MONTHS     = r'(?P<months>\d+)\s*(?:mos?.?|mths?.?|months?)'
 WEEKS       = r'(?P<weeks>[\d.]+)\s*(?:w|wks?|weeks?)'
@@ -153,6 +153,8 @@ def timeparse(sval, granularity='seconds'):
     >>> timeparse('1:30', granularity='minutes')
     5400
     '''
+    if isinstance(sval, (int, float)):
+        return int(sval)
     match = COMPILED_SIGN.match(sval)
     sign = -1 if match.groupdict()['sign'] == '-' else 1
     sval = match.groupdict()['unsigned']
@@ -179,3 +181,8 @@ def timeparse(sval, granularity='seconds'):
                 # SECS is a float, we will return a float
                 return sign * sum([MULTIPLIERS[k] * float(v) for (k, v) in
                             list(mdict.items()) if v is not None])
+
+    try:
+        return int(float(sval)) * sign
+    except ValueError:
+        pass

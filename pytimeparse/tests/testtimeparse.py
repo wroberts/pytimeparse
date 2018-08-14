@@ -177,6 +177,13 @@ class TestTimeparse(unittest.TestCase):
         self.assertEqual(timeparse.timeparse('+0:02', granularity='seconds'), 2)
         self.assertEqual(timeparse.timeparse('-0:02', granularity='seconds'), -2)
 
+    def test_timeparse_unparsed(self):
+        '''Check that unparsed values tries to converts into int(). '''
+        self.assertEqual(timeparse.timeparse(100), 100)
+        self.assertEqual(timeparse.timeparse(-18.333), -18)
+        self.assertEqual(timeparse.timeparse('99.1'), 99)
+        self.assertEqual(timeparse.timeparse('-99.1'), -99)
+
     def test_timeparse_11(self):
         '''timeparse test case 11.'''
         # uptime format
