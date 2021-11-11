@@ -32,6 +32,7 @@ kinds of time expressions.
 # SOFTWARE.
 
 import re
+from typing import Optional, Union, Dict
 
 SIGN        = r'(?P<sign>[+|-])?'
 #YEARS      = r'(?P<years>\d+)\s*(?:ys?|yrs?.?|years?)'
@@ -48,7 +49,7 @@ HOURCLOCK   = r'(?P<hours>\d+):(?P<mins>\d{2}):(?P<secs>\d{2}(?:\.\d+)?)'
 DAYCLOCK    = (r'(?P<days>\d+):(?P<hours>\d{2}):'
                r'(?P<mins>\d{2}):(?P<secs>\d{2}(?:\.\d+)?)')
 
-OPT         = lambda x: r'(?:{x})?'.format(x=x, SEPARATORS=SEPARATORS)
+OPT         = lambda x: r'(?:{x})?'.format(x=x)
 OPTSEP      = lambda x: r'(?:{x}\s*(?:{SEPARATORS}\s*)?)?'.format(
     x=x, SEPARATORS=SEPARATORS)
 
@@ -91,7 +92,7 @@ MULTIPLIERS = dict([
         ('secs',    1)
         ])
 
-def _interpret_as_minutes(sval, mdict):
+def _interpret_as_minutes(sval: str, mdict: Dict[str, str]) -> Dict[str, str]:
     """
     Times like "1:22" are ambiguous; do they represent minutes and seconds
     or hours and minutes?  By default, timeparse assumes the latter.  Call
@@ -115,7 +116,7 @@ def _interpret_as_minutes(sval, mdict):
         pass
     return mdict
 
-def timeparse(sval, granularity='seconds'):
+def timeparse(sval: str, granularity: str = 'seconds') -> Optional[Union[int, float]]:
     '''
     Parse a time expression, returning it as a number of seconds.  If
     possible, the return value will be an `int`; if this is not
@@ -154,6 +155,7 @@ def timeparse(sval, granularity='seconds'):
     5400
     '''
     match = COMPILED_SIGN.match(sval)
+    assert match is not None
     sign = -1 if match.groupdict()['sign'] == '-' else 1
     sval = match.groupdict()['unsigned']
     for timefmt in COMPILED_TIMEFORMATS:
@@ -177,5 +179,6 @@ def timeparse(sval, granularity='seconds'):
                     (int(mdict['secs'], 10) if mdict['secs'] else 0))
             else:
                 # SECS is a float, we will return a float
-                return sign * sum([MULTIPLIERS[k] * float(v) for (k, v) in
+                return float(sign) * sum([MULTIPLIERS[k] * float(v) for (k, v) in
                             list(mdict.items()) if v is not None])
+    return None
