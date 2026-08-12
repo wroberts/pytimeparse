@@ -181,7 +181,11 @@ def timeparse(sval, granularity='seconds'):
                     # SECS is a float, we will return a float
                     return sign * sum([MULTIPLIERS[k] * float(v) for (k, v) in
                                 list(mdict.items()) if v is not None])
-            except ValueError:
-                # Malformed number string (e.g. '1.2.3', '.') — skip to
-                # the next time format pattern per documented behavior.
+            except (ValueError, OverflowError):
+                # A malformed number string (e.g. '1.2.3', '.') raises
+                # ValueError, and an absurdly large value whose float()
+                # overflows to inf (so int() cannot convert it) raises
+                # OverflowError. In either case the field is not a usable
+                # number, so skip to the next time format pattern, per the
+                # documented behavior of returning None for unparseable input.
                 pass

@@ -358,6 +358,18 @@ class TestTimeparse(unittest.TestCase):
         self.assertEqual(timeparse.timeparse('+5.6 weeks'), 3386880)
         self.assertEqual(timeparse.timeparse('-5.6 weeks'), -3386880)
 
+    def test_out_of_range(self):
+        '''An absurdly large value returns None instead of raising.'''
+        # The number is syntactically valid but so large that float()
+        # overflows to inf, which int() cannot convert. That used to leak
+        # an OverflowError; it should be treated as unparseable (None), the
+        # same as any other malformed number.
+        for value in ('9' * 400 + '.5 minutes',
+                      '1' * 350 + '.1 hours',
+                      '5' * 500 + '.5 days',
+                      '9' * 400 + '.9 wk'):
+            self.assertIsNone(timeparse.timeparse(value))
+
     def test_doctest(self):
         '''Run timeparse doctests.'''
         self.assertTrue(doctest.testmod(timeparse, raise_on_error=True))
