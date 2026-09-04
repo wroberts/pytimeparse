@@ -33,7 +33,7 @@ kinds of time expressions.
 
 import re
 
-SIGN        = r'(?P<sign>[+|-])?'
+SIGN        = r'(?P<sign>[+-])?'
 #YEARS      = r'(?P<years>\d+)\s*(?:ys?|yrs?.?|years?)'
 #MONTHS     = r'(?P<months>\d+)\s*(?:mos?.?|mths?.?|months?)'
 WEEKS       = r'(?P<weeks>[\d.]+)\s*(?:w|wks?|weeks?)'
