@@ -173,8 +173,8 @@ def timeparse(sval, granularity='seconds'):
                       mdict['secs'] is None or
                       mdict['secs'].isdigit()):
                     # we will return an integer
-                    return (
-                        sign * int(sum([MULTIPLIERS[k] * float(v) for (k, v) in
+                    return sign * (
+                        int(sum([MULTIPLIERS[k] * float(v) for (k, v) in
                                  list(mdict.items()) if k != 'secs' and v is not None])) +
                         (int(mdict['secs'], 10) if mdict['secs'] else 0))
                 else:

@@ -84,6 +84,14 @@ class TestTimeparse(unittest.TestCase):
         self.assertIsNone(timeparse.timeparse('32 m - 1 s'))
         self.assertIsNone(timeparse.timeparse('32 m + 1 s'))
 
+    def test_fractional_units_with_signed_seconds(self):
+        cases = [('1.5m30s', 120), ('0.5h10s', 1810),
+                 ('0.5d1s', 43201), ('0.5w1s', 302401)]
+        for text, expected in cases:
+            for prefix, sign in [('', 1), ('+', 1), ('-', -1)]:
+                self.assertEqual(timeparse.timeparse(prefix + text),
+                                 sign * expected)
+
     def test_timeparse_1(self):
         '''timeparse test case 1.'''
         self.assertEqual(timeparse.timeparse('32m'), 1920)
