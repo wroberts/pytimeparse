@@ -45,7 +45,7 @@ SEPARATORS  = r'[,/]'
 SECCLOCK    = r':(?P<secs>\d{2}(?:\.\d+)?)'
 MINCLOCK    = r'(?P<mins>\d{1,2}):(?P<secs>\d{2}(?:\.\d+)?)'
 HOURCLOCK   = r'(?P<hours>\d+):(?P<mins>\d{2}):(?P<secs>\d{2}(?:\.\d+)?)'
-DAYCLOCK    = (r'(?P<days>\d+):(?P<hours>\d{2}):'
+DAYCLOCK    = (r'(?P<days>\d+)[:-](?P<hours>\d{2}):'
                r'(?P<mins>\d{2}):(?P<secs>\d{2}(?:\.\d+)?)')
 
 OPT         = lambda x: r'(?:{x})?'.format(x=x, SEPARATORS=SEPARATORS)

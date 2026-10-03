@@ -37,6 +37,8 @@ expressions like the following:
 - ``4:13:02``
 - ``4:13:02.266``
 - ``2:04:13:02.266``
+- ``1-04:18:35`` (Slurm elapsed-time format: days-hours:minutes:seconds)
+- ``1-04:18:35.25``
 - ``2 days,  4:13:02`` (``uptime`` format)
 - ``2 days,  4:13:02.266``
 - ``5hr34m56s``
