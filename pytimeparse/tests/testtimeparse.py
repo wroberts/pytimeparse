@@ -38,6 +38,20 @@ class TestTimeparse(unittest.TestCase):
         self.assertEqual(re.match(timeparse.MINS, '32min').groupdict(),
                          {'mins': '32'})
 
+    def test_multiline_whitespace(self):
+        for value, expected in [
+                ('1 hour\n2 minutes', 3720),
+                ('-1 hour\r\n2 minutes', -3720),
+                ('+ 1 day\n 2:03:04', 93784),
+                ('\n1 minute\n\n', 60)]:
+            with self.subTest(value=value):
+                self.assertEqual(timeparse.timeparse(value), expected)
+
+    def test_invalid_multiline(self):
+        for value in ['invalid\ninput', '1 hour\ninvalid', '1\n2h']:
+            with self.subTest(value=value):
+                self.assertIsNone(timeparse.timeparse(value))
+
     def test_hrs(self):
         '''Test parsing hours.'''
         self.assertEqual(re.match(timeparse.HOURS, '32h').groupdict(),
