@@ -96,6 +96,25 @@ class TestTimeparse(unittest.TestCase):
                 self.assertEqual(timeparse.timeparse(prefix + text),
                                  sign * expected)
 
+    def test_minute_clock_single_digit_seconds(self):
+        for text, expected in [('5:1', 301), ('5:01', 301),
+                               ('0:0', 0), ('12:9', 729),
+                               ('5:1.25', 301.25)]:
+            for prefix, sign in [('', 1), ('+', 1), ('-', -1)]:
+                self.assertEqual(timeparse.timeparse(prefix + text),
+                                 sign * expected)
+        self.assertEqual(timeparse.timeparse(' 5:1 '), 301)
+
+    def test_minute_granularity_keeps_single_digit_clock_policy(self):
+        self.assertEqual(timeparse.timeparse('5:1', granularity='minutes'),
+                         timeparse.timeparse('5:01', granularity='minutes'))
+        self.assertEqual(timeparse.timeparse('5:1', granularity='minutes'),
+                         18060)
+
+    def test_single_digit_seconds_do_not_relax_other_clock_formats(self):
+        for text in ['5:', '5:001', '100:1', ':1', '1:1:1', '5:a']:
+            self.assertIsNone(timeparse.timeparse(text))
+
     def test_timeparse_1(self):
         '''timeparse test case 1.'''
         self.assertEqual(timeparse.timeparse('32m'), 1920)
