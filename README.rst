@@ -89,3 +89,6 @@ Future work
    be useful).
 2. Internationalisation?
 3. Wow, https://github.com/bear/parsedatetime .
+
+Minute-and-second clocks also accept a single-digit seconds field: ``5:1``
+and ``5:01`` both mean 301 seconds. Other clock formats retain their field widths.
