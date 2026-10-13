@@ -31,6 +31,7 @@ kinds of time expressions.
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from decimal import Decimal, InvalidOperation
 import re
 
 SIGN        = r'(?P<sign>[+-])?'
@@ -174,14 +175,16 @@ def timeparse(sval, granularity='seconds'):
                       mdict['secs'].isdigit()):
                     # we will return an integer
                     return sign * (
-                        int(sum([MULTIPLIERS[k] * float(v) for (k, v) in
+                        # sum exactly so that values such as '4.1m' are
+                        # not truncated one second short by float error
+                        int(sum([MULTIPLIERS[k] * Decimal(v) for (k, v) in
                                  list(mdict.items()) if k != 'secs' and v is not None])) +
                         (int(mdict['secs'], 10) if mdict['secs'] else 0))
                 else:
                     # SECS is a float, we will return a float
                     return sign * sum([MULTIPLIERS[k] * float(v) for (k, v) in
                                 list(mdict.items()) if v is not None])
-            except ValueError:
+            except (ValueError, InvalidOperation):
                 # Malformed number string (e.g. '1.2.3', '.') — skip to
                 # the next time format pattern per documented behavior.
                 pass
