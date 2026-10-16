@@ -41,6 +41,7 @@ DAYS        = r'(?P<days>[\d.]+)\s*(?:d|dys?|days?)'
 HOURS       = r'(?P<hours>[\d.]+)\s*(?:h|hrs?|hours?)'
 MINS        = r'(?P<mins>[\d.]+)\s*(?:m|(mins?)|(minutes?))'
 SECS        = r'(?P<secs>[\d.]+)\s*(?:s|secs?|seconds?)'
+MILLIS      = r'(?P<millis>[\d.]+)\s*(?:ms|msecs?|millis|milliseconds?)'
 SEPARATORS  = r'[,/]'
 SECCLOCK    = r':(?P<secs>\d{2}(?:\.\d+)?)'
 MINCLOCK    = r'(?P<mins>\d{1,2}):(?P<secs>\d{2}(?:\.\d+)?)'
@@ -53,14 +54,16 @@ OPTSEP      = lambda x: r'(?:{x}\s*(?:{SEPARATORS}\s*)?)?'.format(
     x=x, SEPARATORS=SEPARATORS)
 
 TIMEFORMATS = [
-    r'{WEEKS}\s*{DAYS}\s*{HOURS}\s*{MINS}\s*{SECS}'.format(
+    r'{WEEKS}\s*{DAYS}\s*{HOURS}\s*{MINS}\s*{SECS}\s*{MILLIS}'.format(
         #YEARS=OPTSEP(YEARS),
         #MONTHS=OPTSEP(MONTHS),
         WEEKS=OPTSEP(WEEKS),
         DAYS=OPTSEP(DAYS),
         HOURS=OPTSEP(HOURS),
         MINS=OPTSEP(MINS),
-        SECS=OPT(SECS)),
+        SECS=OPT(SECS),
+        # A seconds field may be followed by a separator, but not on its own.
+        MILLIS=OPT(r'(?(secs)[,/]?\s*)' + MILLIS)),
     r'{MINCLOCK}'.format(
         MINCLOCK=MINCLOCK),
     r'{WEEKS}\s*{DAYS}\s*{HOURCLOCK}'.format(
@@ -88,7 +91,8 @@ MULTIPLIERS = dict([
         ('days',    60 * 60 * 24),
         ('hours',   60 * 60),
         ('mins',    60),
-        ('secs',    1)
+        ('secs',    1),
+        ('millis',  1e-3)
         ])
 
 def _interpret_as_minutes(sval, mdict):
@@ -164,6 +168,11 @@ def timeparse(sval, granularity='seconds'):
             if granularity == 'minutes':
                 mdict = _interpret_as_minutes(sval, mdict)
             try:
+                if mdict.get('millis') is not None:
+                    result = sign * sum(MULTIPLIERS[k] * float(v)
+                                        for k, v in mdict.items()
+                                        if v is not None)
+                    return int(result) if result.is_integer() else result
                 # if all of the fields are integer numbers
                 if all(v.isdigit() for v in list(mdict.values()) if v):
                     return sign * sum([MULTIPLIERS[k] * int(v, 10) for (k, v) in

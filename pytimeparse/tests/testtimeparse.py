@@ -96,6 +96,36 @@ class TestTimeparse(unittest.TestCase):
                 self.assertEqual(timeparse.timeparse(prefix + text),
                                  sign * expected)
 
+    def test_milliseconds(self):
+        for unit in ('ms', 'msec', 'msecs', 'millis', 'millisecond',
+                     'milliseconds', 'MS'):
+            for prefix, sign in [('', 1), ('+', 1), ('-', -1)]:
+                self.assertEqual(timeparse.timeparse(prefix + '250 ' + unit),
+                                 sign * 0.25)
+
+    def test_milliseconds_with_other_units(self):
+        cases = [('1s250ms', 1.25), ('1m 500ms', 60.5),
+                 ('1h, 2m, 3s, 500ms', 3723.5),
+                 ('1.5s 250ms', 1.75), ('0.5m 250ms', 30.25),
+                 ('0.5ms', 0.0005)]
+        for text, expected in cases:
+            for prefix, sign in [('', 1), ('+', 1), ('-', -1)]:
+                self.assertAlmostEqual(timeparse.timeparse(prefix + text),
+                                       sign * expected)
+
+    def test_whole_seconds_from_milliseconds(self):
+        for text, expected in [('0ms', 0), ('1000ms', 1),
+                               ('1s1000ms', 2), ('1.5s500ms', 2)]:
+            result = timeparse.timeparse(text)
+            self.assertEqual(result, expected)
+            self.assertIsInstance(result, int)
+
+    def test_invalid_milliseconds(self):
+        for text in ('ms', '.ms', '1.2.3ms', '1ms1s',
+                     '1s-250ms', '1ms1ms', '1 microsecond',
+                     '1s,', ',250ms'):
+            self.assertIsNone(timeparse.timeparse(text), text)
+
     def test_timeparse_1(self):
         '''timeparse test case 1.'''
         self.assertEqual(timeparse.timeparse('32m'), 1920)

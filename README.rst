@@ -44,6 +44,9 @@ expressions like the following:
 - ``5hr34m56s``
 - ``5 hours, 34 minutes, 56 seconds``
 - ``5 hrs, 34 mins, 56 secs``
+- ``250ms``
+- ``1 second, 250 milliseconds``
+- ``1m 500ms``
 - ``2 days, 5 hours, 34 minutes, 56 seconds``
 - ``1.2 m``
 - ``1.2 min``
