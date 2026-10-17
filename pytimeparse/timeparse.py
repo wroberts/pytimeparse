@@ -77,7 +77,7 @@ TIMEFORMATS = [
         #MONTHS=MONTHS),
     ]
 
-COMPILED_SIGN = re.compile(r'\s*' + SIGN + r'\s*(?P<unsigned>.*)$')
+COMPILED_SIGN = re.compile(r'\s*' + SIGN + r'\s*(?P<unsigned>.*)$', re.S)
 COMPILED_TIMEFORMATS = [re.compile(r'\s*' + timefmt + r'\s*$', re.I)
                         for timefmt in TIMEFORMATS]
 
