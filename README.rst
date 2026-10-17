@@ -2,9 +2,9 @@
  pytimeparse: time expression parser
 =====================================
 
-.. image:: https://travis-ci.org/wroberts/pytimeparse.svg?branch=master
-    :target: https://travis-ci.org/wroberts/pytimeparse
-    :alt: Travis CI build status
+.. image:: https://github.com/wroberts/pytimeparse/actions/workflows/ci.yml/badge.svg?branch=master
+    :target: https://github.com/wroberts/pytimeparse/actions/workflows/ci.yml
+    :alt: GitHub Actions build status
 
 .. image:: https://coveralls.io/repos/wroberts/pytimeparse/badge.svg
     :target: https://coveralls.io/r/wroberts/pytimeparse

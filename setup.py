@@ -87,6 +87,4 @@ setup(
     #        'sample=sample:main',
     #    ],
     # },
-    test_suite="nose.collector",
-    tests_require=["nose"],
 )
