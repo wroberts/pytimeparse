@@ -110,6 +110,18 @@ class TestTimeparse(unittest.TestCase):
                 self.assertEqual(timeparse.timeparse(prefix + text),
                                  sign * expected)
 
+    def test_fractional_units_exact_integer_results(self):
+        # Fractional units whose exact value is a whole number of seconds
+        # must not lose a second to binary floating point truncation.
+        cases = [('4.1m', 246), ('4.1h', 14760), ('8.2h', 29520),
+                 ('1.13h', 4068), ('0.7d', 60480), ('2.3d', 198720),
+                 ('0.41w', 247968), ('4.1 minutes', 246),
+                 ('4.1h30s', 14790), ('1.33333h', 4799)]
+        for text, expected in cases:
+            for prefix, sign in [('', 1), ('+', 1), ('-', -1)]:
+                self.assertEqual(timeparse.timeparse(prefix + text),
+                                 sign * expected, prefix + text)
+
     def test_timeparse_1(self):
         '''timeparse test case 1.'''
         self.assertEqual(timeparse.timeparse('32m'), 1920)
