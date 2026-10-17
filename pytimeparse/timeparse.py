@@ -42,6 +42,7 @@ DAYS = r"(?P<days>[\d.]+)\s*(?:d|dys?|days?)"
 HOURS = r"(?P<hours>[\d.]+)\s*(?:h|hrs?|hours?)"
 MINS = r"(?P<mins>[\d.]+)\s*(?:m|(mins?)|(minutes?))"
 SECS = r"(?P<secs>[\d.]+)\s*(?:s|secs?|seconds?)"
+MILLIS = r"(?P<millis>[\d.]+)\s*(?:ms|msecs?|millis|milliseconds?)"
 SEPARATORS = r"[,/]"
 SECCLOCK = r":(?P<secs>\d{2}(?:\.\d+)?)"
 MINCLOCK = r"(?P<mins>\d{1,2}):(?P<secs>\d{2}(?:\.\d+)?)"
@@ -54,7 +55,7 @@ OPT = lambda x: r"(?:{x})?".format(x=x)
 OPTSEP = lambda x: r"(?:{x}\s*(?:{SEPARATORS}\s*)?)?".format(x=x, SEPARATORS=SEPARATORS)
 
 TIMEFORMATS = [
-    r"{WEEKS}\s*{DAYS}\s*{HOURS}\s*{MINS}\s*{SECS}".format(
+    r"{WEEKS}\s*{DAYS}\s*{HOURS}\s*{MINS}\s*{SECS}\s*{MILLIS}".format(
         # YEARS=OPTSEP(YEARS),
         # MONTHS=OPTSEP(MONTHS),
         WEEKS=OPTSEP(WEEKS),
@@ -62,6 +63,8 @@ TIMEFORMATS = [
         HOURS=OPTSEP(HOURS),
         MINS=OPTSEP(MINS),
         SECS=OPT(SECS),
+        # A seconds field may be followed by a separator, but not on its own.
+        MILLIS=OPT(r"(?(secs)[,/]?\s*)" + MILLIS),
     ),
     r"{MINCLOCK}".format(MINCLOCK=MINCLOCK),
     r"{WEEKS}\s*{DAYS}\s*{HOURCLOCK}".format(
@@ -89,6 +92,7 @@ MULTIPLIERS = dict(
         ("hours", 60 * 60),
         ("mins", 60),
         ("secs", 1),
+        ("millis", Decimal("0.001")),
     ]
 )
 
@@ -173,7 +177,9 @@ def timeparse(sval: str, granularity: str = "seconds") -> Optional[Union[int, fl
                 mdict = _interpret_as_minutes(sval, mdict)
             try:
                 # if all of the fields are integer numbers
-                if all(v.isdigit() for v in list(mdict.values()) if v):
+                if mdict.get("millis") is None and all(
+                    v.isdigit() for v in list(mdict.values()) if v
+                ):
                     return sign * sum(
                         [
                             MULTIPLIERS[k] * int(v, 10)
@@ -182,7 +188,7 @@ def timeparse(sval: str, granularity: str = "seconds") -> Optional[Union[int, fl
                         ]
                     )
                 # if SECS is an integer number
-                elif (
+                elif mdict.get("millis") is None and (
                     "secs" not in mdict
                     or mdict["secs"] is None
                     or mdict["secs"].isdigit()
@@ -203,14 +209,15 @@ def timeparse(sval: str, granularity: str = "seconds") -> Optional[Union[int, fl
                         + (int(mdict["secs"], 10) if mdict["secs"] else 0)
                     )
                 else:
-                    # SECS is a float, we will return a float
-                    return sign * sum(
+                    # Preserve subsecond precision until the final conversion.
+                    result = sign * sum(
                         [
-                            MULTIPLIERS[k] * float(v)
+                            MULTIPLIERS[k] * Decimal(v)
                             for (k, v) in list(mdict.items())
                             if v is not None
                         ]
                     )
+                    return int(result) if result == int(result) else float(result)
             except (ValueError, InvalidOperation):
                 # Malformed number string (e.g. '1.2.3', '.') — skip to
                 # the next time format pattern per documented behavior.
