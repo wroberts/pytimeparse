@@ -122,6 +122,31 @@ def _interpret_as_minutes(
     return mdict
 
 
+def _sum_fields(mdict: dict[str, Optional[str]], sign: int) -> Union[int, float]:
+    """
+    Sum the seconds represented by parsed fields, applying ``sign``.
+
+    Returns an ``int`` when the result is a whole number of seconds and a
+    ``float`` otherwise.
+    """
+    values = [(k, v) for k, v in mdict.items() if v is not None]
+    # if all of the fields are integer numbers
+    if all(v.isdigit() for _, v in values):
+        return sign * sum(MULTIPLIERS[k] * int(v, 10) for k, v in values)
+    secs = mdict.get("secs")
+    # if SECS is an integer number (or absent)
+    if secs is None or secs.isdigit():
+        # we will return an integer
+        return sign * (
+            # sum exactly so that values such as '4.1m' are
+            # not truncated one second short by float error
+            int(sum(MULTIPLIERS[k] * Decimal(v) for k, v in values if k != "secs"))
+            + (int(secs, 10) if secs else 0)
+        )
+    # SECS is a float, we will return a float
+    return sign * sum(MULTIPLIERS[k] * float(v) for k, v in values)
+
+
 def timeparse(sval: str, granularity: str = "seconds") -> Optional[Union[int, float]]:
     """
     Parse a time expression, returning it as a number of seconds.  If
@@ -165,52 +190,26 @@ def timeparse(sval: str, granularity: str = "seconds") -> Optional[Union[int, fl
     assert match is not None
     sign = -1 if match.groupdict()["sign"] == "-" else 1
     sval = match.groupdict()["unsigned"]
-    for timefmt in COMPILED_TIMEFORMATS:
+    for idx, timefmt in enumerate(COMPILED_TIMEFORMATS):
         match = timefmt.match(sval)
         if match and match.group(0).strip():
             mdict = match.groupdict()
             if granularity == "minutes":
                 mdict = _interpret_as_minutes(sval, mdict)
             try:
-                # if all of the fields are integer numbers
-                if all(v.isdigit() for v in list(mdict.values()) if v):
-                    return sign * sum(
-                        [
-                            MULTIPLIERS[k] * int(v, 10)
-                            for (k, v) in list(mdict.items())
-                            if v is not None
-                        ]
-                    )
-                # if SECS is an integer number
-                elif (
-                    "secs" not in mdict
-                    or mdict["secs"] is None
-                    or mdict["secs"].isdigit()
-                ):
-                    # we will return an integer
-                    return sign * (
-                        # sum exactly so that values such as '4.1m' are
-                        # not truncated one second short by float error
-                        int(
-                            sum(
-                                [
-                                    MULTIPLIERS[k] * Decimal(v)
-                                    for (k, v) in list(mdict.items())
-                                    if k != "secs" and v is not None
-                                ]
-                            )
-                        )
-                        + (int(mdict["secs"], 10) if mdict["secs"] else 0)
-                    )
-                else:
-                    # SECS is a float, we will return a float
-                    return sign * sum(
-                        [
-                            MULTIPLIERS[k] * float(v)
-                            for (k, v) in list(mdict.items())
-                            if v is not None
-                        ]
-                    )
+                # `datetime.timedelta.__str__` renders negative durations as
+                # "-N day[s], HH:MM:SS[.ffffff]": the leading minus applies
+                # only to the day/week portion while the clock part stays
+                # non-negative.  Pattern 2 (weeks/days followed by an
+                # HH:MM:SS clock) is that form; DAYCLOCK (pattern 3) is not.
+                day_clock = idx == 2 and mdict.get("days") is not None
+                if day_clock and sign == -1:
+                    date_mdict = {k: mdict.get(k) for k in ("weeks", "days")}
+                    clock_mdict = {
+                        k: v for k, v in mdict.items() if k not in ("weeks", "days")
+                    }
+                    return _sum_fields(date_mdict, -1) + _sum_fields(clock_mdict, 1)
+                return _sum_fields(mdict, sign)
             except (ValueError, InvalidOperation):
                 # Malformed number string (e.g. '1.2.3', '.') — skip to
                 # the next time format pattern per documented behavior.

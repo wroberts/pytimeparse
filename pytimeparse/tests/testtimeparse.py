@@ -240,15 +240,41 @@ class TestTimeparse(unittest.TestCase):
         # uptime format
         self.assertEqual(timeparse.timeparse("2 days,  4:13:02"), 187982)
         self.assertEqual(timeparse.timeparse("+2 days,  4:13:02"), 187982)
-        self.assertEqual(timeparse.timeparse("-2 days,  4:13:02"), -187982)
+        # A leading minus negates only the day count, matching the semantics
+        # of timedelta.__str__ (the HH:MM:SS clock stays non-negative).
+        self.assertEqual(timeparse.timeparse("-2 days,  4:13:02"), -157618)
 
     def test_timeparse_12(self):
         """timeparse test case 12."""
         self.assertAlmostEqual(timeparse.timeparse("2 days,  4:13:02.266"), 187982.266)
         self.assertAlmostEqual(timeparse.timeparse("+2 days,  4:13:02.266"), 187982.266)
         self.assertAlmostEqual(
-            timeparse.timeparse("-2 days,  4:13:02.266"), -187982.266
+            timeparse.timeparse("-2 days,  4:13:02.266"), -157617.734
         )
+
+    def test_negative_day_clock(self):
+        """A leading minus applies only to the day count (issue #23)."""
+        self.assertEqual(timeparse.timeparse("-1 day, 0:00:05"), -86395)
+        self.assertEqual(timeparse.timeparse("-2 days, 4:13:02"), -157618)
+        self.assertAlmostEqual(
+            timeparse.timeparse("-1 day, 0:00:14.513431"), -86385.486569
+        )
+
+    def test_negative_timedelta_roundtrip(self):
+        """timeparse inverts timedelta.__str__ without drift (issue #23)."""
+        from datetime import timedelta
+
+        for td in [
+            timedelta(days=-1, seconds=5),
+            timedelta(days=-3, seconds=71218),
+            timedelta(seconds=-86395),
+            timedelta(days=-1, microseconds=14513431),
+        ]:
+            with self.subTest(td=td):
+                text = str(td)
+                self.assertAlmostEqual(
+                    timeparse.timeparse(text), td.total_seconds(), places=6, msg=text
+                )
 
     def test_timeparse_13(self):
         """timeparse test case 13."""
