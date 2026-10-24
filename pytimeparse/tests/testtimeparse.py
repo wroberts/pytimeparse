@@ -125,7 +125,9 @@ class TestTimeparse(unittest.TestCase):
             ("0.41w", 247968),
             ("4.1 minutes", 246),
             ("4.1h30s", 14790),
-            ("1.33333h", 4799),
+            ("1.33333h", 4800),
+            ("0.33333d", 28800),
+            ("0.3333333333333333d", 28800),
         ]
         for text, expected in cases:
             for prefix, sign in [("", 1), ("+", 1), ("-", -1)]:

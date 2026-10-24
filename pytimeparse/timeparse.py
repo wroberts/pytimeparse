@@ -191,7 +191,7 @@ def timeparse(sval: str, granularity: str = "seconds") -> Optional[Union[int, fl
                     return sign * (
                         # sum exactly so that values such as '4.1m' are
                         # not truncated one second short by float error
-                        int(
+                        round(
                             sum(
                                 [
                                     MULTIPLIERS[k] * Decimal(v)
