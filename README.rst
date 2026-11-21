@@ -42,6 +42,7 @@ expressions like the following:
 - ``2 days,  4:13:02`` (``uptime`` format)
 - ``2 days,  4:13:02.266``
 - ``5hr34m56s``
+- ``8h:57m:28s`` (colons between explicitly named units)
 - ``5 hours, 34 minutes, 56 seconds``
 - ``5 hrs, 34 mins, 56 secs``
 - ``2 days, 5 hours, 34 minutes, 56 seconds``
@@ -69,6 +70,12 @@ possible, otherwise a floating-point number)::
     >>> from pytimeparse import parse
     >>> parse('1.2 minutes')
     72
+
+Explicit units retain their meaning with colon separators, including when
+``granularity='minutes'`` is used to interpret clock expressions::
+
+    >>> parse('1m:24s', granularity='minutes')
+    84
 
 A number of seconds can be converted back into a string using the
 ``datetime`` module in the standard library, as noted in
