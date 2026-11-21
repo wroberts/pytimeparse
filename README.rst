@@ -81,6 +81,27 @@ A number of seconds can be converted back into a string using the
     >>> str(datetime.timedelta(seconds=138016))
     '1 day, 14:20:16'
 
+Command-line arguments
+----------------------
+
+Use ``pytimeparse.argparse.parse_timedelta`` as an ``argparse`` type
+converter to receive ``datetime.timedelta`` objects directly::
+
+    >>> import argparse
+    >>> from pytimeparse.argparse import parse_timedelta
+    >>> parser = argparse.ArgumentParser()
+    >>> _ = parser.add_argument('--duration', type=parse_timedelta)
+    >>> args = parser.parse_args(['--duration', '1h30m'])
+    >>> args.duration
+    datetime.timedelta(seconds=5400)
+    >>> parser.parse_args(['--duration=0s']).duration
+    datetime.timedelta(0)
+
+The converter also works with positional arguments and ``nargs``. Invalid
+expressions and values outside the ``timedelta`` range produce the usual
+``argparse`` argument error. For negative durations, use
+``--duration=-2m`` so the leading minus is part of the option's value.
+
 Future work
 -----------
 
