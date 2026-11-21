@@ -42,7 +42,7 @@ DAYS = r"(?P<days>[\d.]+)\s*(?:d|dys?|days?)"
 HOURS = r"(?P<hours>[\d.]+)\s*(?:h|hrs?|hours?)"
 MINS = r"(?P<mins>[\d.]+)\s*(?:m|(mins?)|(minutes?))"
 SECS = r"(?P<secs>[\d.]+)\s*(?:s|secs?|seconds?)"
-SEPARATORS = r"[,/]"
+SEPARATORS = r"(?:[,/]|:(?=\s*[\d.]))"
 SECCLOCK = r":(?P<secs>\d{2}(?:\.\d+)?)"
 MINCLOCK = r"(?P<mins>\d{1,2}):(?P<secs>\d{2}(?:\.\d+)?)"
 HOURCLOCK = r"(?P<hours>\d+):(?P<mins>\d{2}):(?P<secs>\d{2}(?:\.\d+)?)"
@@ -106,7 +106,7 @@ def _interpret_as_minutes(
     {'hours': '1', 'mins': '24'}
     """
     if (
-        sval.count(":") == 1
+        re.fullmatch(MINCLOCK, sval.strip()) is not None
         and "." not in sval
         and (("hours" not in mdict) or (mdict["hours"] is None))
         and (("days" not in mdict) or (mdict["days"] is None))

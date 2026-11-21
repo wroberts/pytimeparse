@@ -51,6 +51,32 @@ class TestTimeparse(unittest.TestCase):
             with self.subTest(value=value):
                 self.assertIsNone(timeparse.timeparse(value))
 
+    def test_colon_separated_units(self):
+        for value, expected in [
+            ("8h:57m:28s", 32248),
+            ("8 h : 57 m : 28 s", 32248),
+            ("1m:24s", 84),
+            ("2w:3d:4h:5m:6s", 1483506),
+            ("-1.5h:30m", -7200),
+            ("+1m:0.5s", 60.5),
+            ("1m:.5s", 60.5),
+        ]:
+            for granularity in ["seconds", "minutes"]:
+                with self.subTest(value=value, granularity=granularity):
+                    self.assertEqual(
+                        timeparse.timeparse(value, granularity=granularity), expected
+                    )
+
+    def test_colon_separated_units_keep_clock_granularity(self):
+        self.assertEqual(timeparse.timeparse("1:24"), 84)
+        self.assertEqual(timeparse.timeparse("1:24", granularity="minutes"), 5040)
+        self.assertEqual(timeparse.timeparse("1m24s", granularity="minutes"), 84)
+
+    def test_invalid_colon_separators(self):
+        for value in ["8h::57m", "8h:", "8h:57m:", ":8h", "8h:57", "8h:/57m"]:
+            with self.subTest(value=value):
+                self.assertIsNone(timeparse.timeparse(value))
+
     def test_hrs(self):
         """Test parsing hours."""
         self.assertEqual(re.match(timeparse.HOURS, "32h").groupdict(), {"hours": "32"})
