@@ -122,7 +122,9 @@ def _interpret_as_minutes(
     return mdict
 
 
-def timeparse(sval: str, granularity: str = "seconds") -> Optional[Union[int, float]]:
+def timeparse(
+    sval: str, granularity: str = "seconds", default_unit: Optional[str] = None
+) -> Optional[Union[int, float]]:
     """
     Parse a time expression, returning it as a number of seconds.  If
     possible, the return value will be an `int`; if this is not
@@ -159,7 +161,22 @@ def timeparse(sval: str, granularity: str = "seconds") -> Optional[Union[int, fl
     90
     >>> timeparse('1:30', granularity='minutes')
     5400
+
+    Set default_unit to seconds, minutes, hours, days or weeks to accept
+    bare numeric strings. None (the default) keeps rejecting them. Explicit
+    units and clocks are unaffected, and results are always in seconds.
+    An unsupported default_unit raises ValueError.
+
+    >>> timeparse('10', default_unit='minutes')
+    600
+    >>> timeparse('-1.5', default_unit='hours')
+    -5400
     """
+    if default_unit is not None:
+        if default_unit not in ("seconds", "minutes", "hours", "days", "weeks"):
+            raise ValueError("Unsupported default_unit: {!r}".format(default_unit))
+        if re.fullmatch(r"\s*[+-]?\s*(?:\d+(?:\.\d*)?|\.\d+)\s*", sval):
+            sval = sval + " " + default_unit
     match = COMPILED_SIGN.match(sval)
     # the pattern can match any string (empty unsigned part included)
     assert match is not None

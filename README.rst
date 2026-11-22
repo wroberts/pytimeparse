@@ -81,6 +81,27 @@ A number of seconds can be converted back into a string using the
     >>> str(datetime.timedelta(seconds=138016))
     '1 day, 14:20:16'
 
+Bare numeric strings
+--------------------
+
+By default, a string such as ``"10"`` has no unit and returns ``None``.
+Use ``default_unit`` to opt into interpreting bare numbers as ``seconds``,
+``minutes``, ``hours``, ``days`` or ``weeks``. The result is still in seconds;
+explicit units and clock expressions take precedence::
+
+    >>> parse('10', default_unit='minutes')
+    600
+    >>> parse('-1.5', default_unit='hours')
+    -5400
+    >>> parse('10s', default_unit='hours')
+    10
+    >>> parse('1:30', default_unit='hours')
+    90
+
+Signs, decimal fractions and surrounding whitespace are accepted. Malformed
+numbers still return ``None``. An unsupported ``default_unit`` raises
+``ValueError``; ``None`` preserves the default behavior.
+
 Future work
 -----------
 
